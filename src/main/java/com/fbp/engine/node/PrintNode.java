@@ -1,0 +1,21 @@
+package com.fbp.engine.node;
+
+import com.fbp.engine.core.DefaultInputPort;
+import com.fbp.engine.core.Node;
+import com.fbp.engine.core.interfaces.InputPort;
+import com.fbp.engine.message.Message;
+
+public class PrintNode extends AbstractNode {
+
+    public PrintNode(String id) {
+        super(id);
+        addInputPort("in");
+    }
+    public InputPort getInputPort(){
+        return getInputPort("in");
+    }
+    @Override
+    protected void onProcess(Message message) {
+        System.out.println("[" + getId() + "] " + message.getPayload());
+    }
+}
