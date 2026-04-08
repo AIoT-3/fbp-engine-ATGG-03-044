@@ -1,0 +1,4 @@
+Message(id=9b612209-e9fd-46df-975e-aeea5a5c9a80, payload={temperature=21.5}, timestamp=1775635759082)
+Message(id=fd4ad5be-50a0-40b1-aebd-faf823e398a0, payload={temperature=22.5}, timestamp=1775635759084)
+Message(id=c640a6ba-5f5d-48d4-9731-757f3c04ac90, payload={temperature=23.5}, timestamp=1775635759084)
+Message(id=af57f647-6a0f-4288-b53c-4977528c6f1f, payload={temperature=21.5}, timestamp=1775635759094)
