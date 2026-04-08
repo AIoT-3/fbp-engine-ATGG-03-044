@@ -2,7 +2,7 @@ package com.fbp.engine.Node;
 
 import com.fbp.engine.core.Node;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.AbstractNode;
+import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.node.PrintNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

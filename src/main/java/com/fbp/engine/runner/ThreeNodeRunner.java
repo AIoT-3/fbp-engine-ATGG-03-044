@@ -5,7 +5,7 @@ import com.fbp.engine.message.Message;
 import com.fbp.engine.node.FilterNode;
 import com.fbp.engine.node.GeneratorNode;
 import com.fbp.engine.node.PrintNode;
-
+// 과제 4-5: 3노드 스레드 파이프라인 실행
 public class ThreeNodeRunner {
     private static volatile boolean running = true;
 

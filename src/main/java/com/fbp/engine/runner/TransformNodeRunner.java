@@ -5,7 +5,7 @@ import com.fbp.engine.message.Message;
 import com.fbp.engine.node.GeneratorNode;
 import com.fbp.engine.node.PrintNode;
 import com.fbp.engine.node.TransformNode;
-
+// 과제 6-2: TransformNode를 활용한 화씨→섭씨 변환 플로우 실행
 public class TransformNodeRunner {
     private static volatile boolean running = true;
     public static void main(String[] args) {

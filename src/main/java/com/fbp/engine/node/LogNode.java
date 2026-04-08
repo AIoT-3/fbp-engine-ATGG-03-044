@@ -1,10 +1,10 @@
 package com.fbp.engine.node;
 
+import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.core.interfaces.InputPort;
 import com.fbp.engine.core.interfaces.OutputPort;
 import com.fbp.engine.message.Message;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 

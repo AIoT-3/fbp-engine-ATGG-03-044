@@ -1,8 +1,9 @@
 package com.fbp.engine.node;
 
+import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
 
-public class CounterNode extends AbstractNode{
+public class CounterNode extends AbstractNode {
     private int count = 0;
     public CounterNode(String id) {
         super(id);

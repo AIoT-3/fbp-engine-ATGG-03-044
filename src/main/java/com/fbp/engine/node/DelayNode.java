@@ -1,8 +1,9 @@
 package com.fbp.engine.node;
 
+import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
 
-public class DelayNode extends AbstractNode{
+public class DelayNode extends AbstractNode {
     private final long delayMs;
     public DelayNode(String id, long delayMs) {
         super(id);

@@ -5,7 +5,7 @@ import com.fbp.engine.message.Message;
 import com.fbp.engine.node.FilterNode;
 import com.fbp.engine.node.PrintNode;
 import com.fbp.engine.node.TimerNode;
-
+// 과제 5-6: TimerNode -> FilterNode -> PrintNode 파이프라인 실행
 public class TimeFilterRunner {
     private static volatile boolean running = true;
 

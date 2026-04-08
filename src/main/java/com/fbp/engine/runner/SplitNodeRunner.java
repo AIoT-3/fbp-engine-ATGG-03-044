@@ -1,11 +1,12 @@
 package com.fbp.engine.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.Flow;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.PrintNode;
 import com.fbp.engine.node.SplitNode;
 import com.fbp.engine.node.TimerNode;
-
+// 과제 6-4: SplitNode를 사용한 분기 플로우 실행
 public class SplitNodeRunner {
     private static volatile boolean running = true;
 
@@ -15,13 +16,17 @@ public class SplitNodeRunner {
         PrintNode warningNode = new PrintNode("warning");
         PrintNode normalNode = new PrintNode("normal");
 
-        Connection connection1 = new Connection();
-        Connection connection2 = new Connection();
-        Connection connection3 = new Connection();
-
-        timerNode.getOutputPort("out").connect(connection1);
-        splitNode.getOutputPort("match").connect(connection2);
-        splitNode.getOutputPort("mismatch").connect(connection3);
+        Flow flow = new Flow("split-flow")
+                .addNode(timerNode)
+                .addNode(splitNode)
+                .addNode(warningNode)
+                .addNode(normalNode)
+                .connect("timer-1","out","split-1","in")
+                .connect("split-1","match","warning","in")
+                .connect("split-1","mismatch","normal","in");
+        Connection connection1 = flow.getConnections().get(0);
+        Connection connection2 = flow.getConnections().get(1);
+        Connection connection3 = flow.getConnections().get(2);
 
         Thread splitThread = new Thread(() -> {
             while (running) {

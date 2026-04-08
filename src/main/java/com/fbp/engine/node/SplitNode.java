@@ -1,8 +1,9 @@
 package com.fbp.engine.node;
 
+import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
 
-public class SplitNode extends AbstractNode{
+public class SplitNode extends AbstractNode {
     private String id;
     private String key;
     private double threshold;

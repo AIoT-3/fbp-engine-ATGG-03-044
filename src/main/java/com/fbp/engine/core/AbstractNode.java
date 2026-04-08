@@ -1,8 +1,5 @@
-package com.fbp.engine.node;
+package com.fbp.engine.core;
 
-import com.fbp.engine.core.DefaultInputPort;
-import com.fbp.engine.core.DefaultOutputPort;
-import com.fbp.engine.core.Node;
 import com.fbp.engine.core.interfaces.InputPort;
 import com.fbp.engine.core.interfaces.OutputPort;
 import com.fbp.engine.message.Message;
