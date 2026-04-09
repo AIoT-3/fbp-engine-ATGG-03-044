@@ -5,7 +5,7 @@ import com.fbp.engine.core.AbstractNode;
 public class HumiditySensorNode extends AbstractNode {
     private final double min;
     private final double max;
-ㅊ
+
     public HumiditySensorNode(String id, double min, double max) {
         super(id);
         this.min = min;
