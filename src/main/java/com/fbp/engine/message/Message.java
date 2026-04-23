@@ -1,7 +1,8 @@
 package com.fbp.engine.message;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -9,7 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Message {
     private final UUID id;
     private final Map<String, Object> payload;

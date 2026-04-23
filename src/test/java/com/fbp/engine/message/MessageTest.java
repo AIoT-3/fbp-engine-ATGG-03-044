@@ -35,7 +35,7 @@ class MessageTest {
     }
     @Test
     @DisplayName("페이로드 조회")
-    void getPayloaTest() {
+    void getPayloadTest() {
         assertEquals(25.5, message.get("temperature"));
         assertEquals("room1", message.get("location"));
     }

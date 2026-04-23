@@ -3,7 +3,9 @@ package com.fbp.engine.node;
 import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.core.interfaces.InputPort;
 import com.fbp.engine.message.Message;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PrintNode extends AbstractNode {
 
     public PrintNode(String id) {
@@ -15,6 +17,6 @@ public class PrintNode extends AbstractNode {
     }
     @Override
     protected void onProcess(Message message) {
-        System.out.println("[" + getId() + "] " + message.getPayload());
+        log.info("[{}] {}", getId(), message.getPayload());
     }
 }

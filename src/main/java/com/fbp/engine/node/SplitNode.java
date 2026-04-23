@@ -4,9 +4,8 @@ import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
 
 public class SplitNode extends AbstractNode {
-    private String id;
-    private String key;
-    private double threshold;
+    private final String key;
+    private final double threshold;
     public SplitNode(String id, String key, double threshold) {
         super(id);
         this.key = key;

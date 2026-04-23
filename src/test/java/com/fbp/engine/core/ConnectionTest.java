@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,18 +18,27 @@ public class ConnectionTest {
     }
 
     @Test
-    @DisplayName("deliver-poll 기본 동작")
-    void DeliverPollTest() throws InterruptedException {
+    @DisplayName("deliver 후 target 수신")
+    void DeliverTargetTest() throws InterruptedException {
         Message message = new Message(Map.of("temperature", 25.5));
+        TestTargetNode targetNode = new TestTargetNode("target-1");
 
         connection.deliver(message);
-        Message received = connection.poll();
+        targetNode.getInputPort("in").receive(connection.poll());
 
-        assertSame(message, received);
+        assertSame(message, targetNode.getReceived());
     }
 
     @Test
-    @DisplayName("메시지 순서 보장")
+    @DisplayName("target 미설정 시 동작")
+    void NoTargetTest() {
+        Message message = new Message(Map.of("temperature", 25.5));
+
+        assertDoesNotThrow(() -> connection.deliver(message));
+    }
+
+    @Test
+    @DisplayName("다수 메시지 순서 보장")
     void MessageOrderTest() throws InterruptedException {
         Message first = new Message(Map.of("seq", 1));
         Message second = new Message(Map.of("seq", 2));
@@ -51,12 +58,10 @@ public class ConnectionTest {
     void MultiThreadDeliverPollTest() throws InterruptedException {
         Message message = new Message(Map.of("temperature", 25.5));
         Message[] receivedBox = new Message[1];
-        CountDownLatch latch = new CountDownLatch(1);
 
         Thread consumer = new Thread(() -> {
             try {
                 receivedBox[0] = connection.poll();
-                latch.countDown();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -64,8 +69,9 @@ public class ConnectionTest {
 
         consumer.start();
         connection.deliver(message);
+        consumer.join(2000);
 
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        assertFalse(consumer.isAlive());
         assertSame(message, receivedBox[0]);
     }
 
@@ -73,12 +79,10 @@ public class ConnectionTest {
     @DisplayName("poll 대기 동작")
     void PollBlockingTest() throws InterruptedException {
         Message[] receivedBox = new Message[1];
-        CountDownLatch latch = new CountDownLatch(1);
 
         Thread consumer = new Thread(() -> {
             try {
                 receivedBox[0] = connection.poll();
-                latch.countDown();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -87,12 +91,14 @@ public class ConnectionTest {
         consumer.start();
 
         Thread.sleep(500);
-        assertEquals(1, latch.getCount());
+        assertTrue(consumer.isAlive());
 
         Message message = new Message(Map.of("temperature", 25.5));
         connection.deliver(message);
 
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        consumer.join(2000);
+
+        assertFalse(consumer.isAlive());
         assertSame(message, receivedBox[0]);
     }
 
@@ -108,14 +114,9 @@ public class ConnectionTest {
         limitedConnection.deliver(first);
         limitedConnection.deliver(second);
 
-        CountDownLatch started = new CountDownLatch(1);
-        CountDownLatch completed = new CountDownLatch(1);
-
         Thread producer = new Thread(() -> {
             try {
-                started.countDown();
                 limitedConnection.deliver(third);
-                completed.countDown();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -123,20 +124,40 @@ public class ConnectionTest {
 
         producer.start();
 
-        assertTrue(started.await(1, TimeUnit.SECONDS));
-        assertFalse(completed.await(500, TimeUnit.MILLISECONDS));
+        Thread.sleep(500);
+        assertTrue(producer.isAlive());
 
         limitedConnection.poll();
 
-        assertTrue(completed.await(1, TimeUnit.SECONDS));
+        producer.join(2000);
+
+        assertFalse(producer.isAlive());
     }
 
     @Test
-    @DisplayName("버퍼 크기 조회")
+    @DisplayName("버퍼 크기 확인")
     void BufferSizeTest() throws InterruptedException {
         connection.deliver(new Message(Map.of("seq", 1)));
         connection.deliver(new Message(Map.of("seq", 2)));
 
         assertEquals(2, connection.getBufferSize());
+    }
+
+    static class TestTargetNode extends AbstractNode {
+        private Message received;
+
+        TestTargetNode(String id) {
+            super(id);
+            addInputPort("in");
+        }
+
+        @Override
+        protected void onProcess(Message message) {
+            received = message;
+        }
+
+        Message getReceived() {
+            return received;
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.fbp.engine.node.TemperatureSensorNode;
 import com.fbp.engine.node.ThresholdFilterNode;
 import com.fbp.engine.node.TimerNode;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -138,6 +139,7 @@ public class TemperatureMonitoringTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("alert 경로 검증")
     void AlertPathTest() throws InterruptedException {
         runFlow();
@@ -150,6 +152,7 @@ public class TemperatureMonitoringTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("normal 경로 검증")
     void NormalPathTest() throws InterruptedException {
         runFlow();
@@ -162,6 +165,7 @@ public class TemperatureMonitoringTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("전체 메시지 수")
     void TotalMessageCountTest() throws InterruptedException {
         runFlow();

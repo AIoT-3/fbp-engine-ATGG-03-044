@@ -71,4 +71,17 @@ class MergeNodeTest {
         assertNotNull(mergeNode.getOutputPort("out"));
     }
 
+    @Test
+    @DisplayName("입력 포트 태깅")
+    void InputPortReceiveTest() throws InterruptedException {
+        mergeNode.getInputPort("in-1").receive(new Message(Map.of("temperature", 25.0)));
+        mergeNode.getInputPort("in-2").receive(new Message(Map.of("humidity", 60.0)));
+
+        Message received = connection.poll();
+
+        assertEquals(Double.valueOf(25.0), received.get("temperature"));
+        assertEquals(Double.valueOf(60.0), received.get("humidity"));
+        assertFalse(received.hasKey("_inputPort"));
+    }
+
 }

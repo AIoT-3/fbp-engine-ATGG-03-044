@@ -1,15 +1,26 @@
 package com.fbp.engine.core;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Flow {
-    private String id;
-    private Map<String, AbstractNode> nodes;
-    private List<Connection> connections;
+    private final String id;
+    private final Map<String, AbstractNode> nodes;
     private final List<ConnectionInfo> connectionInfos;
+
+    @Data
+    @RequiredArgsConstructor
+    static class ConnectionRoute {
+        private final Connection connection;
+        private final AbstractNode targetNode;
+        private final String targetPort;
+    }
 
     private enum VisitState{
         UNVISITED,
@@ -37,7 +48,6 @@ public class Flow {
     public Flow(String id) {
         this.id = id;
         this.nodes = new HashMap<>();
-        this.connections = new ArrayList<>();
         this.connectionInfos = new ArrayList<>();
     }
     public Flow addNode(AbstractNode node){
@@ -55,7 +65,6 @@ public class Flow {
                 targetNodeId + ":" + targetPort;
         Connection connection = new Connection(connectionId);
         sourceNode.getOutputPort(sourcePort).connect(connection);
-        connections.add(connection);
         connectionInfos.add(new ConnectionInfo(sourceNodeId, sourcePort, targetNodeId, targetPort, connection));
         return this;
     }
@@ -69,15 +78,42 @@ public class Flow {
             node.shutdown();
         }
     }
-    public Map<String, AbstractNode> getNodes(){
-        return nodes;
+
+    public Connection getConnection(String connectionId) {
+        for (ConnectionInfo info : connectionInfos) {
+            if (connectionId.equals(info.connection.getId())) {
+                return info.connection;
+            }
+        }
+        return null;
     }
-    public String getId(){
+
+    public String getId() {
         return id;
     }
 
-    public List<Connection> getConnections(){
-        return connections;
+    public Map<String, AbstractNode> getNodes() {
+        return Collections.unmodifiableMap(nodes);
+    }
+
+    public List<Connection> getConnections() {
+        List<Connection> connections = new ArrayList<>();
+        for (ConnectionInfo info : connectionInfos) {
+            connections.add(info.connection);
+        }
+        return Collections.unmodifiableList(connections);
+    }
+
+    List<ConnectionRoute> getConnectionRoutes() {
+        List<ConnectionRoute> routes = new ArrayList<>();
+        for (ConnectionInfo info : connectionInfos) {
+            routes.add(new ConnectionRoute(
+                    info.connection,
+                    nodes.get(info.targetNodeId),
+                    info.targetPort
+            ));
+        }
+        return routes;
     }
 
     public List<String> validate(){

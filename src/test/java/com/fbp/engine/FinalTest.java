@@ -6,6 +6,7 @@ import com.fbp.engine.core.FlowEngine;
 import com.fbp.engine.core.State;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.*;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -58,13 +59,6 @@ public class FinalTest {
                 .connect("filter-1", "normal", "log-1", "in")
                 .connect("log-1", "out", "file-1", "in");
 
-        List<Connection> connections = flow.getConnections();
-        Connection timerToSensor = connections.get(0);
-        Connection sensorToFilter = connections.get(1);
-        Connection filterToAlert = connections.get(2);
-        Connection filterToLog = connections.get(3);
-        Connection logToFile = connections.get(4);
-
         Connection sensorToCollector = new Connection();
         Connection alertToCollector = new Connection();
         Connection normalToCollector = new Connection();
@@ -74,66 +68,6 @@ public class FinalTest {
         filterNode.getOutputPort("normal").connect(normalToCollector);
 
         final boolean[] running = {true};
-
-        Thread sensorThread = new Thread(() -> {
-            while (running[0]) {
-                try {
-                    Message message = timerToSensor.poll();
-                    sensorNode.process(message);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-            }
-        });
-
-        Thread filterThread = new Thread(() -> {
-            while (running[0]) {
-                try {
-                    Message message = sensorToFilter.poll();
-                    filterNode.process(message);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-            }
-        });
-
-        Thread alertThread = new Thread(() -> {
-            while (running[0]) {
-                try {
-                    Message message = filterToAlert.poll();
-                    alertNode.process(message);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-            }
-        });
-
-        Thread normalThread = new Thread(() -> {
-            while (running[0]) {
-                try {
-                    Message message = filterToLog.poll();
-                    logNode.process(message);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-            }
-        });
-
-        Thread fileThread = new Thread(() -> {
-            while (running[0]) {
-                try {
-                    Message message = logToFile.poll();
-                    fileWriterNode.process(message);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-            }
-        });
 
         Thread sensorCollectorThread = new Thread(() -> {
             while (running[0]) {
@@ -174,11 +108,6 @@ public class FinalTest {
         FlowEngine engine = new FlowEngine();
         engine.register(flow);
 
-        sensorThread.start();
-        filterThread.start();
-        alertThread.start();
-        normalThread.start();
-        fileThread.start();
         sensorCollectorThread.start();
         alertCollectorThread.start();
         normalCollectorThread.start();
@@ -194,20 +123,10 @@ public class FinalTest {
         Thread.sleep(300);
         running[0] = false;
 
-        sensorThread.interrupt();
-        filterThread.interrupt();
-        alertThread.interrupt();
-        normalThread.interrupt();
-        fileThread.interrupt();
         sensorCollectorThread.interrupt();
         alertCollectorThread.interrupt();
         normalCollectorThread.interrupt();
 
-        sensorThread.join();
-        filterThread.join();
-        alertThread.join();
-        normalThread.join();
-        fileThread.join();
         sensorCollectorThread.join();
         alertCollectorThread.join();
         normalCollectorThread.join();
@@ -218,6 +137,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("엔진 시작/종료")
     void EngineStateTest() throws Exception {
         runScenario();
@@ -229,6 +149,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("alert 경로 정확성")
     void AlertPathTest() throws Exception {
         runScenario();
@@ -243,6 +164,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("normal 경로 정확성")
     void NormalPathTest() throws Exception {
         runScenario();
@@ -257,6 +179,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("전체 분기 완전성")
     void TotalBranchTest() throws Exception {
         runScenario();
@@ -267,6 +190,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("파일 기록 검증")
     void FileWriteTest() throws Exception {
         runScenario();
@@ -278,6 +202,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("센서 데이터 형식")
     void MessageFormatTest() throws Exception {
         runScenario();
@@ -292,6 +217,7 @@ public class FinalTest {
     }
 
     @Test
+    @Tag("integration")
     @DisplayName("온도 범위")
     void TemperatureRangeTest() throws Exception {
         runScenario();

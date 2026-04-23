@@ -4,36 +4,52 @@ import com.fbp.engine.message.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class DefaultInputPortTest {
-    private Node owner;
+class DefaultInputPortTest {
+    private TestNode owner;
     private DefaultInputPort inputPort;
 
     @BeforeEach
-    public void setUp() {
-        owner = mock(Node.class);
-        inputPort = new DefaultInputPort("in",owner);
+    void setUp() {
+        owner = new TestNode("owner-1");
+        inputPort = new DefaultInputPort("in", owner);
     }
+
     @Test
     @DisplayName("receive 시 owner 호출")
-    void shouldCallOwnerProcessWhenReceive() {
+    void ReceiveOwnerTest() {
         Message message = new Message(Map.of("temperature", 25.5));
 
         inputPort.receive(message);
 
-        verify(owner).process(message);
+        assertSame(message, owner.getReceived());
     }
 
     @Test
     @DisplayName("포트 이름 확인")
-    void shouldReturnGivenPortName() {
+    void NameTest() {
         assertEquals("in", inputPort.getName());
+    }
+
+    static class TestNode extends AbstractNode {
+        private Message received;
+
+        TestNode(String id) {
+            super(id);
+        }
+
+        @Override
+        protected void onProcess(Message message) {
+            received = message;
+        }
+
+        Message getReceived() {
+            return received;
+        }
     }
 }

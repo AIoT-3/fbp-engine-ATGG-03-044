@@ -40,14 +40,8 @@ public class FilterNode extends AbstractNode {
 
     @Override
     protected void onProcess(Message message) {
-        Object value = message.get(key);
-        if (value == null) {
-            return;
-        }
-        if(value instanceof Number number){
-            if(number.doubleValue() >= threshold){
-                send("out",message);
-            }
+        if (matches(message)) {
+            send("out", message);
         }
     }
 }

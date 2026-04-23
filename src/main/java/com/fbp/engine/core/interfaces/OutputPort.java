@@ -4,7 +4,7 @@ import com.fbp.engine.core.Connection;
 import com.fbp.engine.message.Message;
 
 public interface OutputPort {
-    public String getName();
-    public void connect(Connection connection);
-    public void send(Message message);
+    String getName();
+    void connect(Connection connection);
+    void send(Message message);
 }

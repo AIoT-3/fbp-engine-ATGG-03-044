@@ -12,4 +12,4 @@
 | SensorNode | 클래스 | com.fbp.engine.node | 센서 데이터를 생성하여 다음 노드로 보내는 노드이다. |
 | FilterNode | 클래스 | com.fbp.engine.node | 입력된 메시지를 조건에 따라 필터링하거나 분기하는 노드이다. |
 | AlertNode | 클래스 | com.fbp.engine.node | 조건을 만족한 메시지에 대해 알림을 출력하거나 전송하는 노드이다. |
-| MainRunner | 클래스 | com.fbp.engine.runner | FlowEngine을 실행하는 프로그램 시작점이다. |
+| MainRunner | 클래스 | com.fbp.engine.demo.runner | FlowEngine을 실행하는 프로그램 시작점이다. |

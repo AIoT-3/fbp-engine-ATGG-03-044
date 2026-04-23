@@ -55,13 +55,15 @@ class FileWriterNodeTest {
 
     @Test
     @DisplayName("shutdown 후 파일 닫힘")
-    void ShutdownCloseTest() {
+    void ShutdownCloseTest() throws Exception {
         fileWriterNode.initialize();
         fileWriterNode.process(new Message(Map.of("temperature", 21.5)));
         fileWriterNode.shutdown();
 
-        assertThrows(RuntimeException.class,
-                () -> fileWriterNode.process(new Message(Map.of("temperature", 22.5))));
+        assertDoesNotThrow(() -> fileWriterNode.process(new Message(Map.of("temperature", 22.5))));
+
+        List<String> lines = Files.readAllLines(Path.of(filePath));
+        assertEquals(1, lines.size());
 
         File file = new File(filePath);
         file.delete();

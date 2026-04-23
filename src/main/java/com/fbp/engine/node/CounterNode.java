@@ -2,9 +2,13 @@ package com.fbp.engine.node;
 
 import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+@Slf4j
 public class CounterNode extends AbstractNode {
-    private int count = 0;
+    private final AtomicInteger count = new AtomicInteger();
     public CounterNode(String id) {
         super(id);
         addInputPort("in");
@@ -12,13 +16,13 @@ public class CounterNode extends AbstractNode {
     }
     @Override
     protected void onProcess(Message message) {
-        count++;
-        Message newMessage = message.withEntry("count",count);
+        int currentCount = count.incrementAndGet();
+        Message newMessage = message.withEntry("count", currentCount);
         send("out", newMessage);
     }
 
     @Override
     public void shutdown() {
-        System.out.println("[" + getId() + "] 총 처리 메시지: " + count + "건");
+        log.info("[{}] 총 처리 메시지: {}건", getId(), count.get());
     }
 }

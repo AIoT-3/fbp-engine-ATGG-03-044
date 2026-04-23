@@ -1,44 +1,50 @@
 package com.fbp.engine.core;
 
 import com.fbp.engine.message.Message;
+import lombok.Getter;
+
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Connection {
-    private String id;
-    private LinkedBlockingQueue<Message> buffer;
-    //private InputPort target;
+    private static final AtomicLong SEQUENCE = new AtomicLong();
+
+    @Getter
+    private final String id;
+    private final LinkedBlockingQueue<Message> buffer;
 
     public Connection() {
-        this(100);
+        this("connection-" + SEQUENCE.incrementAndGet(), 100);
     }
 
     public Connection(int capacity) {
+        this("connection-" + SEQUENCE.incrementAndGet(), capacity);
+    }
+
+    public Connection(String id) {
+        this(id, 100);
+    }
+
+    public Connection(String id, int capacity) {
+        this.id = id;
         this.buffer = new LinkedBlockingQueue<>(capacity);
     }
-    public Connection(String id){
-        this.id = id;
-        this.buffer = new LinkedBlockingQueue<>(100);
-    }
+
+    // Test support constructor. Production code should use capacity-based constructors.
     public Connection(String id, LinkedBlockingQueue<Message> buffer) {
         this.id = id;
         this.buffer = buffer;
     }
-    public String getId(){
-        return id;
 
-    }
     public void deliver(Message message) throws InterruptedException {
         buffer.put(message);
     }
-//    public void setTarget(InputPort target){
-//        this.target = Objects.requireNonNull(target);
-//    }
-    public int getBufferSize(){
+
+    public int getBufferSize() {
         return buffer.size();
     }
+
     public Message poll() throws InterruptedException {
         return buffer.take();
     }
-
-
 }

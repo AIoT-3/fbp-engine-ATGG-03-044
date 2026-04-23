@@ -53,6 +53,40 @@ class FlowEngineTest {
             return shutdown;
         }
     }
+
+    static class EmittingNode extends AbstractNode {
+        public EmittingNode(String id) {
+            super(id);
+            addInputPort("in");
+            addOutputPort("out");
+        }
+
+        @Override
+        protected void onProcess(Message message) {
+        }
+
+        public void emit(Message message) {
+            send("out", message);
+        }
+    }
+
+    static class CollectingNode extends AbstractNode {
+        private Message received;
+
+        public CollectingNode(String id) {
+            super(id);
+            addInputPort("in");
+        }
+
+        @Override
+        protected void onProcess(Message message) {
+            received = message;
+        }
+
+        public boolean hasReceived() {
+            return received != null;
+        }
+    }
     @Test
     @DisplayName("초기 상태")
     void InitialStateTest(){
@@ -183,5 +217,37 @@ class FlowEngineTest {
         assertTrue(engine.getFlows().containsKey("flow-2"));
         assertEquals(State.STOPPED, engine.getFlowStates().get("flow-1"));
         assertEquals(State.STOPPED, engine.getFlowStates().get("flow-2"));
+    }
+
+    @Test
+    @DisplayName("startFlow 메시지 전달")
+    void MessageDeliveryTest() throws InterruptedException {
+        EmittingNode emitter = new EmittingNode("emitter");
+        CollectingNode collector = new CollectingNode("collector");
+
+        Flow flow = new Flow("flow-1")
+                .addNode(emitter)
+                .addNode(collector)
+                .connect("emitter", "out", "collector", "in");
+
+        engine.register(flow);
+        engine.startFlow("flow-1");
+
+        emitter.emit(new Message(java.util.Map.of("value", 42)));
+
+        waitUntilReceived(collector, 1000);
+
+        assertNotNull(collector.received);
+        assertEquals(Integer.valueOf(42), collector.received.get("value"));
+
+        engine.stopFlow("flow-1");
+    }
+
+    private void waitUntilReceived(CollectingNode collector, long timeoutMs) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        while (!collector.hasReceived() && System.currentTimeMillis() < deadline) {
+            Thread.sleep(10);
+        }
+        assertTrue(collector.hasReceived());
     }
 }
