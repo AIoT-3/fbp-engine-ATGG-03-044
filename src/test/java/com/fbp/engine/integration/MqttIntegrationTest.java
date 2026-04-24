@@ -68,13 +68,27 @@ class MqttIntegrationTest {
         Connection subscriberToPublisher = new Connection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToPublisher);
-        threads.add(TestNodeWorkerSupport.startWorker("mqtt-pipeline-thread", subscriberToPublisher, publisherNode, running));
+        // MqttSubscriberNode가 메시지에 'topic' 필드를 넣으므로, publisher가 config topic 대신
+        // 그 값을 사용하지 않도록 워커에서 topic 키를 제거한다.
+        threads.add(new Thread(() -> {
+            while (running.get()) {
+                try {
+                    Message msg = subscriberToPublisher.poll();
+                    publisherNode.process(msg.withoutKey("topic").withoutKey("mqttTimestamp"));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }, "mqtt-pipeline-thread"));
+        threads.get(threads.size() - 1).start();
 
         subscriberNode.initialize();
         publisherNode.initialize();
         closeables.add(subscriberNode::shutdown);
         closeables.add(publisherNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 및 publisher 연결 대기
         MqttTestSupport.publish(inputTopic, "{\"value\":35.0}");
 
         MqttTestSupport.ReceivedMessage received = messages.poll(5, TimeUnit.SECONDS);
@@ -105,15 +119,18 @@ class MqttIntegrationTest {
         subscriberNode.initialize();
         closeables.add(subscriberNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 대기
         MqttTestSupport.publish(prefix + "/temp", "{\"value\":25.0}");
         MqttTestSupport.publish(prefix + "/humidity", "{\"value\":60.0}");
 
         Message first = outputConnection.poll();
         Message second = outputConnection.poll();
 
-        assertNotNull(first.get("topic"));
-        assertNotNull(second.get("topic"));
-        assertNotEquals(String.valueOf(first.get("topic")), String.valueOf(second.get("topic")));
+        String firstTopic = first.get("topic");
+        String secondTopic = second.get("topic");
+        assertNotNull(firstTopic);
+        assertNotNull(secondTopic);
+        assertNotEquals(firstTopic, secondTopic);
     }
 
     @Test

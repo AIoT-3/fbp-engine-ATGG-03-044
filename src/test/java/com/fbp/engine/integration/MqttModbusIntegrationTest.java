@@ -71,6 +71,7 @@ class MqttModbusIntegrationTest {
         subscriberNode.initialize();
         closeables.add(subscriberNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 대기
         MqttTestSupport.publish(inputTopic, "{\"temperature\":35.0}");
         MqttTestSupport.publish(inputTopic, "{\"temperature\":25.0}");
 
@@ -127,6 +128,7 @@ class MqttModbusIntegrationTest {
         closeables.add(subscriberNode::shutdown);
         closeables.add(writerNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 대기
         MqttTestSupport.publish(inputTopic, "{\"temperature\":35.0}");
 
         Message result = writerResult.poll();
@@ -173,13 +175,27 @@ class MqttModbusIntegrationTest {
         ruleNode.getOutputPort("match").connect(ruleToPublisher);
 
         threads.add(TestNodeWorkerSupport.startWorker("mqtt-alert-rule", subscriberToRule, ruleNode, running));
-        threads.add(TestNodeWorkerSupport.startWorker("mqtt-alert-publisher", ruleToPublisher, publisherNode, running));
+        // RuleNode가 message를 그대로 통과시키므로 'topic' 필드가 남아 publisher가 원래 topic으로 발행하게 됨.
+        // topic 키를 제거한 후 publisherNode로 전달한다.
+        threads.add(new Thread(() -> {
+            while (running.get()) {
+                try {
+                    Message msg = ruleToPublisher.poll();
+                    publisherNode.process(msg.withoutKey("topic").withoutKey("mqttTimestamp"));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }, "mqtt-alert-publisher"));
+        threads.get(threads.size() - 1).start();
 
         subscriberNode.initialize();
         publisherNode.initialize();
         closeables.add(subscriberNode::shutdown);
         closeables.add(publisherNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 대기
         MqttTestSupport.publish(inputTopic, "{\"temperature\":35.0}");
 
         MqttTestSupport.ReceivedMessage received = messages.poll(5, TimeUnit.SECONDS);
@@ -245,7 +261,20 @@ class MqttModbusIntegrationTest {
         writerNode.getOutputPort("result").connect(writerResult);
 
         threads.add(TestNodeWorkerSupport.startWorker("mqtt-e2e-rule", subscriberToRule, ruleNode, running));
-        threads.add(TestNodeWorkerSupport.startWorker("mqtt-e2e-publisher", ruleToPublisher, publisherNode, running));
+        // RuleNode가 message를 그대로 통과시키므로 'topic' 필드가 남아 publisher가 원래 topic으로 발행하게 됨.
+        // topic 키를 제거한 후 publisherNode로 전달한다.
+        threads.add(new Thread(() -> {
+            while (running.get()) {
+                try {
+                    Message msg = ruleToPublisher.poll();
+                    publisherNode.process(msg.withoutKey("topic").withoutKey("mqttTimestamp"));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }, "mqtt-e2e-publisher"));
+        threads.get(threads.size() - 1).start();
         threads.add(TestNodeWorkerSupport.startWorker("mqtt-e2e-writer", ruleToWriter, writerNode, running));
 
         subscriberNode.initialize();
@@ -255,6 +284,7 @@ class MqttModbusIntegrationTest {
         closeables.add(publisherNode::shutdown);
         closeables.add(writerNode::shutdown);
 
+        Thread.sleep(500); // 구독 준비 대기
         MqttTestSupport.publish(inputTopic, "{\"temperature\":35.0}");
 
         MqttTestSupport.ReceivedMessage received = messages.poll(5, TimeUnit.SECONDS);

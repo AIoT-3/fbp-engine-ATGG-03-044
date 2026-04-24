@@ -12,6 +12,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>21</maven.compiler.release>
+    <!-- 기본값: integration 태그 테스트 제외. 통합 테스트 포함 시 -Dexcluded.groups="" 지정 -->
+    <excluded.groups>integration</excluded.groups>
   </properties>
 
   <dependencyManagement>
@@ -116,7 +118,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.3.0</version>
         <configuration>
-          <excludedGroups>integration</excludedGroups>
+          <excludedGroups>${excluded.groups}</excludedGroups>
         </configuration>
       </plugin>
       <plugin>
