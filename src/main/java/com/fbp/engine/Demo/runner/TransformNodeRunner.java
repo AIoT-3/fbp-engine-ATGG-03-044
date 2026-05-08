@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.GeneratorNode;
 import com.fbp.engine.node.PrintNode;
@@ -26,8 +27,8 @@ public class TransformNodeRunner {
         );
         PrintNode printNode = new PrintNode("printer-1");
 
-        Connection connection1 = new Connection();
-        Connection connection2 = new Connection();
+        Connection connection1 = new LocalConnection();
+        Connection connection2 = new LocalConnection();
 
         transformNode.getOutputPort("out").connect(connection2);
 

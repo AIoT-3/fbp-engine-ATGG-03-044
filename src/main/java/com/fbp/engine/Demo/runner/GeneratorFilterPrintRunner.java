@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.FilterNode;
 import com.fbp.engine.node.GeneratorNode;
@@ -15,8 +16,8 @@ public class GeneratorFilterPrintRunner {
         FilterNode filterNode = new FilterNode("filter-1", "temperature", 30.0);
         PrintNode printNode = new PrintNode("printer-1");
 
-        Connection generatorToFilter = new Connection();
-        Connection filterToPrint = new Connection();
+        Connection generatorToFilter = new LocalConnection();
+        Connection filterToPrint = new LocalConnection();
 
         generatorNode.getOutputPort().connect(generatorToFilter);
         filterNode.getOutputPort().connect(filterToPrint);

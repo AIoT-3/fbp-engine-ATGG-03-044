@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.ModbusReaderNode;
 import com.fbp.engine.node.PrintNode;
@@ -30,9 +31,9 @@ public class ModbusReaderRunner {
         PrintNode printNode = new PrintNode("printer-1");
         PrintNode errorPrintNode = new PrintNode("error-printer-1");
 
-        Connection timerToReader = new Connection();
-        Connection readerToPrint = new Connection();
-        Connection readerToError = new Connection();
+        Connection timerToReader = new LocalConnection();
+        Connection readerToPrint = new LocalConnection();
+        Connection readerToError = new LocalConnection();
 
         timerNode.getOutputPort("out").connect(timerToReader);
         readerNode.getOutputPort("out").connect(readerToPrint);

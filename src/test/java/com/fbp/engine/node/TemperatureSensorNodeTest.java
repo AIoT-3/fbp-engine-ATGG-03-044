@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.TemperatureSensorNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class TemperatureSensorNodeTest {
     @BeforeEach
     void setUp(){
         temperatureSensorNode = new TemperatureSensorNode("temp-sensor-1", 15.0, 45.0);
-        connection = new Connection();
+        connection = new LocalConnection();
         temperatureSensorNode.getOutputPort("out").connect(connection);
     }
     @Test

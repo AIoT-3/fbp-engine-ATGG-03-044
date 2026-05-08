@@ -1,6 +1,7 @@
 package com.fbp.engine.integration;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.MqttPublisherNode;
 import com.fbp.engine.node.MqttSubscriberNode;
@@ -65,7 +66,7 @@ class MqttIntegrationTest {
                         "retained", false
                 )
         );
-        Connection subscriberToPublisher = new Connection();
+        Connection subscriberToPublisher = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToPublisher);
         // MqttSubscriberNode가 메시지에 'topic' 필드를 넣으므로, publisher가 config topic 대신
@@ -113,7 +114,7 @@ class MqttIntegrationTest {
                         "qos", 1
                 )
         );
-        Connection outputConnection = new Connection();
+        Connection outputConnection = new LocalConnection();
         subscriberNode.getOutputPort("out").connect(outputConnection);
 
         subscriberNode.initialize();
@@ -148,7 +149,7 @@ class MqttIntegrationTest {
                         "qos", 1
                 )
         );
-        Connection outputConnection = new Connection();
+        Connection outputConnection = new LocalConnection();
         subscriberNode.getOutputPort("out").connect(outputConnection);
 
         subscriberNode.initialize();
@@ -184,7 +185,7 @@ class MqttIntegrationTest {
                         "qos", 1
                 )
         );
-        Connection outputConnection = new Connection();
+        Connection outputConnection = new LocalConnection();
         subscriberNode.getOutputPort("out").connect(outputConnection);
 
         subscriberNode.initialize();

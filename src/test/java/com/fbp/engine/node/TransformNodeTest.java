@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.TransformNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class TransformNodeTest {
         transformNode = new TransformNode(
                 "transform-1", message -> message.withEntry("temperatureC", 30.0)
         );
-        connection = new Connection();
+        connection = new LocalConnection();
         transformNode.getOutputPort("out").connect(connection);
     }
     @Test
@@ -37,7 +37,7 @@ class TransformNodeTest {
                 "transform-null",
             message -> null
         );
-        Connection nullConnection = new Connection();
+        Connection nullConnection = new LocalConnection();
         nullTransformNode.getOutputPort("out").connect(nullConnection);
         Message nullMessage = new Message(Map.of("temperatureF", 86.0));
         nullTransformNode.process(nullMessage);
@@ -50,7 +50,7 @@ class TransformNodeTest {
                 "transform-2",
                 message ->  message.withEntry("temperatureC", 30.0)
         );
-        Connection connection2 = new Connection();
+        Connection connection2 = new LocalConnection();
         transformNode2.getOutputPort("out").connect(connection2);
         Message message = new Message(Map.of("temperatureF", 86.0));
 

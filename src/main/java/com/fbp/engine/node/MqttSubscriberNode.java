@@ -105,8 +105,34 @@ public class MqttSubscriberNode extends ProtocolNode {
     protected Message toMessage(String topic, String payload) {
         Map<String, Object> parsedPayload = parsePayload(payload);
         parsedPayload.put("topic", topic);
+        parsedPayload.putAll(parseIotTopic(topic));
         parsedPayload.put("mqttTimestamp", System.currentTimeMillis());
         return new Message(parsedPayload);
+    }
+
+    private Map<String, Object> parseIotTopic(String topic) {
+        Map<String, Object> topicFields = new LinkedHashMap<>();
+        if (topic == null || !topic.startsWith("iot/")) {
+            return topicFields;
+        }
+
+        String[] parts = topic.split("/");
+        if (parts.length != 5 && parts.length != 6) {
+            return topicFields;
+        }
+
+        topicFields.put("location", parts[1]);
+        if (parts.length == 6) {
+            topicFields.put("point", parts[2]);
+            topicFields.put("sensor_type", parts[3]);
+            topicFields.put("dev_eui", parts[4]);
+            topicFields.put("measurement_key", parts[5]);
+        } else {
+            topicFields.put("sensor_type", parts[2]);
+            topicFields.put("dev_eui", parts[3]);
+            topicFields.put("measurement_key", parts[4]);
+        }
+        return topicFields;
     }
 
     @Override

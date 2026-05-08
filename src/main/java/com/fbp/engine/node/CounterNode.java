@@ -24,5 +24,6 @@ public class CounterNode extends AbstractNode {
     @Override
     public void shutdown() {
         log.info("[{}] 총 처리 메시지: {}건", getId(), count.get());
+        super.shutdown();
     }
 }

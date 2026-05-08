@@ -1,6 +1,7 @@
 package com.fbp.engine;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.core.Flow;
 import com.fbp.engine.core.FlowEngine;
 import com.fbp.engine.core.State;
@@ -59,9 +60,9 @@ public class FinalTest {
                 .connect("filter-1", "normal", "log-1", "in")
                 .connect("log-1", "out", "file-1", "in");
 
-        Connection sensorToCollector = new Connection();
-        Connection alertToCollector = new Connection();
-        Connection normalToCollector = new Connection();
+        Connection sensorToCollector = new LocalConnection();
+        Connection alertToCollector = new LocalConnection();
+        Connection normalToCollector = new LocalConnection();
 
         sensorNode.getOutputPort("out").connect(sensorToCollector);
         filterNode.getOutputPort("alert").connect(alertToCollector);

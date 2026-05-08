@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.EchoProtocolNode;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class EchoProtocolRunner {
                         "port", 12345
                 )
         );
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
         node.getOutputPort("out").connect(connection);
 
         node.initialize();

@@ -1,17 +1,9 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
-import com.fbp.engine.core.Connection;
-import com.fbp.engine.core.DefaultInputPort;
-import com.fbp.engine.core.Node;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.GeneratorNode;
-import com.fbp.engine.record.RecordingNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

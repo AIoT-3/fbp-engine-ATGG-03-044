@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.MergeNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class MergeNodeTest {
     @BeforeEach
     void setUp() {
         mergeNode = new MergeNode("merge-1");
-        connection = new Connection();
+        connection = new LocalConnection();
         mergeNode.getOutputPort("out").connect(connection);
     }
 

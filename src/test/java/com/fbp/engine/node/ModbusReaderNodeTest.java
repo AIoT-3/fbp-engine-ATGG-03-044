@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.ModbusReaderNode;
 import com.fbp.engine.protocol.ModbusTcpSimulator;
 import com.fbp.engine.protocol.TestPorts;
 import org.junit.jupiter.api.AfterEach;
@@ -81,7 +81,7 @@ class ModbusReaderNodeTest {
     @DisplayName("레지스터 읽기")
     void ReadTest() throws Exception {
         startSimulator(250, 600, 1);
-        Connection outConnection = new Connection();
+        Connection outConnection = new LocalConnection();
         modbusReaderNode.getOutputPort("out").connect(outConnection);
 
         modbusReaderNode.initialize();
@@ -114,7 +114,7 @@ class ModbusReaderNodeTest {
                 )
         );
         startSimulator(250, 600, 1);
-        Connection outConnection = new Connection();
+        Connection outConnection = new LocalConnection();
         modbusReaderNode.getOutputPort("out").connect(outConnection);
 
         modbusReaderNode.initialize();
@@ -141,7 +141,7 @@ class ModbusReaderNodeTest {
                 )
         );
         startSimulator(250, 600, 1);
-        Connection errorConnection = new Connection();
+        Connection errorConnection = new LocalConnection();
         modbusReaderNode.getOutputPort("error").connect(errorConnection);
 
         modbusReaderNode.initialize();

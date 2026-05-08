@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.ModbusWriterNode;
 import com.fbp.engine.protocol.ModbusTcpSimulator;
 import com.fbp.engine.protocol.TestPorts;
 import org.junit.jupiter.api.AfterEach;
@@ -126,7 +126,7 @@ class ModbusWriterNodeTest {
     @DisplayName("결과 포트")
     void ResultTest() throws Exception {
         startSimulator();
-        Connection resultConnection = new Connection();
+        Connection resultConnection = new LocalConnection();
         modbusWriterNode.getOutputPort("result").connect(resultConnection);
 
         modbusWriterNode.initialize();

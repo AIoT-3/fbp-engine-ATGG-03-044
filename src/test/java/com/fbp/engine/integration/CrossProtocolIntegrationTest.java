@@ -1,6 +1,7 @@
 package com.fbp.engine.integration;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.ModbusReaderNode;
 import com.fbp.engine.node.ModbusWriterNode;
@@ -74,9 +75,9 @@ class CrossProtocolIntegrationTest {
                         "fixedValue", 1
                 )
         );
-        Connection subscriberToRule = new Connection();
-        Connection ruleToWriter = new Connection();
-        Connection writerResult = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection ruleToWriter = new LocalConnection();
+        Connection writerResult = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(ruleToWriter);
@@ -137,8 +138,8 @@ class CrossProtocolIntegrationTest {
                         "retained", false
                 )
         );
-        Connection readerToRule = new Connection();
-        Connection ruleToPublisher = new Connection();
+        Connection readerToRule = new LocalConnection();
+        Connection ruleToPublisher = new LocalConnection();
 
         readerNode.getOutputPort("out").connect(readerToRule);
         ruleNode.getOutputPort("match").connect(ruleToPublisher);

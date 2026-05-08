@@ -19,7 +19,7 @@ public class DefaultOutputPortTest {
     @Test
     @DisplayName("단일 Connection 전달")
     void OneConnectionTest() throws InterruptedException {
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
         Message message = new Message(Map.of("temperature", 25.5));
 
         outputPort.connect(connection);
@@ -30,8 +30,8 @@ public class DefaultOutputPortTest {
     @Test
     @DisplayName("다중 Connection 전달 (1:N)")
     void MultiConnectionsTest() throws InterruptedException{
-        Connection first = new Connection();
-        Connection second = new Connection();
+        Connection first = new LocalConnection();
+        Connection second = new LocalConnection();
         Message message = new Message(Map.of("temperature", 25.5));
 
         outputPort.connect(first);

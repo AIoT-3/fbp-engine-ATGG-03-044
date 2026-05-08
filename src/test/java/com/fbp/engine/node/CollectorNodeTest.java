@@ -1,14 +1,12 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.CollectorNode;
-import com.fbp.engine.node.GeneratorNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,7 +62,7 @@ class CollectorNodeTest {
     @DisplayName("파이프라인 연결 검증")
     void PipelineTest() throws InterruptedException {
         GeneratorNode generatorNode = new GeneratorNode("generator-1");
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
 
         generatorNode.getOutputPort().connect(connection);
 

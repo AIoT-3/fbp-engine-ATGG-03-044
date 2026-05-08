@@ -34,7 +34,28 @@ public class Message {
 
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {
-        return (T) payload.get(key);
+        if (key == null) {
+            return null;
+        }
+        if (payload.containsKey(key)) {
+            return (T) payload.get(key);
+        }
+        if (!key.contains(".")) {
+            return null;
+        }
+
+        Object current = payload;
+        String[] parts = key.split("\\.");
+        for (String part : parts) {
+            if (!(current instanceof Map<?, ?> currentMap)) {
+                return null;
+            }
+            current = currentMap.get(part);
+            if (current == null) {
+                return null;
+            }
+        }
+        return (T) current;
     }
 
     public Message withEntry(String key, Object value) {
@@ -44,7 +65,7 @@ public class Message {
     }
 
     public boolean hasKey(String key) {
-        return payload.containsKey(key);
+        return get(key) != null;
     }
 
     public Message withoutKey(String key) {

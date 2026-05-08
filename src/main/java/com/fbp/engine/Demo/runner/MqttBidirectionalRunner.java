@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.MqttPublisherNode;
 import com.fbp.engine.node.MqttSubscriberNode;
@@ -36,8 +37,8 @@ public class MqttBidirectionalRunner {
                 )
         );
 
-        Connection subscriberToFilter = new Connection();
-        Connection filterToPublisher = new Connection();
+        Connection subscriberToFilter = new LocalConnection();
+        Connection filterToPublisher = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToFilter);
         filterNode.getOutputPort("alert").connect(filterToPublisher);

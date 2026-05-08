@@ -41,6 +41,32 @@ class MessageTest {
     }
 
     @Test
+    @DisplayName("점 경로로 중첩 페이로드 조회")
+    void getNestedPayloadPathTest() {
+        Message nestedMessage = new Message(Map.of(
+                "deviceInfo", Map.of("deviceName", "LHT65-001"),
+                "object", Map.of("temperature", 23.5, "humidity", 65.2)
+        ));
+
+        assertEquals("LHT65-001", nestedMessage.get("deviceInfo.deviceName"));
+        assertEquals(23.5, nestedMessage.get("object.temperature"));
+        assertEquals(65.2, nestedMessage.get("object.humidity"));
+        assertTrue(nestedMessage.hasKey("object.temperature"));
+        assertFalse(nestedMessage.hasKey("object.pressure"));
+    }
+
+    @Test
+    @DisplayName("실제 키가 있으면 점 경로보다 실제 키 우선")
+    void directKeyHasPriorityOverNestedPathTest() {
+        Message nestedMessage = new Message(Map.of(
+                "object.temperature", 99.0,
+                "object", Map.of("temperature", 23.5)
+        ));
+
+        assertEquals(99.0, nestedMessage.get("object.temperature"));
+    }
+
+    @Test
     @DisplayName("제네릭 get 타입 캐스팅")
     void GenericGetTest() {
         Double temperature = message.get("temperature");

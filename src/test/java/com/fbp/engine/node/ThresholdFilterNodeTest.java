@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.ThresholdFilterNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,8 @@ class ThresholdFilterNodeTest {
     @BeforeEach
     void setUp() {
         thresholdFilterNode = new ThresholdFilterNode("filter-1", "temperature", 30.0);
-        alertConnection = new Connection();
-        normalConnection = new Connection();
+        alertConnection = new LocalConnection();
+        normalConnection = new LocalConnection();
         thresholdFilterNode.getOutputPort("alert").connect(alertConnection);
         thresholdFilterNode.getOutputPort("normal").connect(normalConnection);
     }
@@ -84,6 +84,24 @@ class ThresholdFilterNodeTest {
 
         assertSame(alertMessage, receivedAlert);
         assertSame(normalMessage, receivedNormal);
+    }
+
+    @Test
+    @DisplayName("중첩 필드 기준 초과 → alert 포트")
+    void NestedFieldAlertTest() throws InterruptedException {
+        ThresholdFilterNode nestedFilter = new ThresholdFilterNode("nested-filter", "object.temperature", 30.0);
+        Connection nestedAlertConnection = new LocalConnection();
+        Connection nestedNormalConnection = new LocalConnection();
+        nestedFilter.getOutputPort("alert").connect(nestedAlertConnection);
+        nestedFilter.getOutputPort("normal").connect(nestedNormalConnection);
+        Message message = new Message(Map.of(
+                "object", Map.of("temperature", 31.5, "humidity", 65.2)
+        ));
+
+        nestedFilter.process(message);
+
+        assertSame(message, nestedAlertConnection.poll());
+        assertEquals(0, nestedNormalConnection.getBufferSize());
     }
 
 

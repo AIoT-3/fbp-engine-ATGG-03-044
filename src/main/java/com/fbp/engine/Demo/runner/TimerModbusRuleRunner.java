@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.node.ModbusReaderNode;
 import com.fbp.engine.node.ModbusWriterNode;
 import com.fbp.engine.node.PrintNode;
@@ -49,10 +50,10 @@ public class TimerModbusRuleRunner {
         );
         PrintNode errorPrintNode = new PrintNode("error-printer-1");
 
-        Connection timerToReader = new Connection();
-        Connection readerToRule = new Connection();
-        Connection readerToError = new Connection();
-        Connection ruleToWriter = new Connection();
+        Connection timerToReader = new LocalConnection();
+        Connection readerToRule = new LocalConnection();
+        Connection readerToError = new LocalConnection();
+        Connection ruleToWriter = new LocalConnection();
 
         timerNode.getOutputPort("out").connect(timerToReader);
         readerNode.getOutputPort("out").connect(readerToRule);

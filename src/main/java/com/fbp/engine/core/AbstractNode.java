@@ -3,6 +3,7 @@ package com.fbp.engine.core;
 import com.fbp.engine.core.interfaces.InputPort;
 import com.fbp.engine.core.interfaces.OutputPort;
 import com.fbp.engine.message.Message;
+import com.fbp.engine.metrics.MetricsCollector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public abstract class AbstractNode implements Node {
         return inputPort;
     }
     protected OutputPort addOutputPort(String name) {
-        OutputPort outputPort = new DefaultOutputPort(name);
+        OutputPort outputPort = new DefaultOutputPort(name, id);
         outputPorts.put(name, outputPort);
         return outputPort;
     }
@@ -43,6 +44,22 @@ public abstract class AbstractNode implements Node {
 
     public InputPort getInputPort(String name) {
         return inputPorts.get(name);
+    }
+
+    public void attachMetrics(String flowId, MetricsCollector metricsCollector) {
+        for (OutputPort outputPort : outputPorts.values()) {
+            if (outputPort instanceof DefaultOutputPort defaultOutputPort) {
+                defaultOutputPort.attachMetrics(flowId, metricsCollector);
+            }
+        }
+    }
+
+    public void detachMetrics() {
+        for (OutputPort outputPort : outputPorts.values()) {
+            if (outputPort instanceof DefaultOutputPort defaultOutputPort) {
+                defaultOutputPort.detachMetrics();
+            }
+        }
     }
 
 

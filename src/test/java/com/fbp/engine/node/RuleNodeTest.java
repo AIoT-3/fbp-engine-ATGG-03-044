@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.RuleNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +19,8 @@ class RuleNodeTest {
             Number value = message.get("temperature");
             return value != null && value.doubleValue() > 30.0;
         });
-        Connection matchConnection = new Connection();
-        Connection mismatchConnection = new Connection();
+        Connection matchConnection = new LocalConnection();
+        Connection mismatchConnection = new LocalConnection();
 
         ruleNode.getOutputPort("match").connect(matchConnection);
         ruleNode.getOutputPort("mismatch").connect(mismatchConnection);
@@ -39,8 +39,8 @@ class RuleNodeTest {
             Number value = message.get("temperature");
             return value != null && value.doubleValue() > 30.0;
         });
-        Connection matchConnection = new Connection();
-        Connection mismatchConnection = new Connection();
+        Connection matchConnection = new LocalConnection();
+        Connection mismatchConnection = new LocalConnection();
 
         ruleNode.getOutputPort("match").connect(matchConnection);
         ruleNode.getOutputPort("mismatch").connect(mismatchConnection);
@@ -69,7 +69,7 @@ class RuleNodeTest {
             Number value = message.get("temperature");
             return value != null && value.doubleValue() > 30.0;
         });
-        Connection mismatchConnection = new Connection();
+        Connection mismatchConnection = new LocalConnection();
 
         ruleNode.getOutputPort("mismatch").connect(mismatchConnection);
         ruleNode.process(new Message(Map.of("humidity", 60)));
@@ -86,8 +86,8 @@ class RuleNodeTest {
             Number value = message.get("temperature");
             return value != null && value.doubleValue() > 30.0;
         });
-        Connection matchConnection = new Connection();
-        Connection mismatchConnection = new Connection();
+        Connection matchConnection = new LocalConnection();
+        Connection mismatchConnection = new LocalConnection();
 
         ruleNode.getOutputPort("match").connect(matchConnection);
         ruleNode.getOutputPort("mismatch").connect(mismatchConnection);

@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.node.LogNode;
 import com.fbp.engine.node.ModbusWriterNode;
 import com.fbp.engine.node.MqttPublisherNode;
@@ -53,11 +54,11 @@ public class MqttModbusRuleRunner {
         LogNode logNode = new LogNode("log-1");
         PrintNode resultPrintNode = new PrintNode("result-printer-1");
 
-        Connection subscriberToRule = new Connection();
-        Connection ruleToPublisher = new Connection();
-        Connection ruleToWriter = new Connection();
-        Connection ruleToLog = new Connection();
-        Connection writerToPrint = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection ruleToPublisher = new LocalConnection();
+        Connection ruleToWriter = new LocalConnection();
+        Connection ruleToLog = new LocalConnection();
+        Connection writerToPrint = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(ruleToPublisher);

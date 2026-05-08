@@ -1,6 +1,6 @@
 package com.fbp.engine.core;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,10 +14,12 @@ public class Flow {
     private final Map<String, AbstractNode> nodes;
     private final List<ConnectionInfo> connectionInfos;
 
-    @Data
+    @Getter
     @RequiredArgsConstructor
     static class ConnectionRoute {
         private final Connection connection;
+        private final AbstractNode sourceNode;
+        private final String sourcePort;
         private final AbstractNode targetNode;
         private final String targetPort;
     }
@@ -55,15 +57,19 @@ public class Flow {
         return this;
     }
     public Flow connect(String sourceNodeId, String sourcePort, String targetNodeId, String targetPort){
+        String connectionId = sourceNodeId + ":" + sourcePort + "->" +
+                targetNodeId + ":" + targetPort;
+        Connection connection = new LocalConnection(connectionId);
+        return connect(sourceNodeId, sourcePort, targetNodeId, targetPort, connection);
+    }
+
+    public Flow connect(String sourceNodeId, String sourcePort, String targetNodeId, String targetPort, Connection connection){
         AbstractNode sourceNode = nodes.get(sourceNodeId);
         AbstractNode targetNode = nodes.get(targetNodeId);
         if(sourceNode == null || sourceNode.getOutputPort(sourcePort) == null
                 || targetNode == null || targetNode.getInputPort(targetPort)== null){
             throw new IllegalArgumentException("노드/포트 없음");
         }
-        String connectionId = sourceNodeId + ":" + sourcePort + "->" +
-                targetNodeId + ":" + targetPort;
-        Connection connection = new Connection(connectionId);
         sourceNode.getOutputPort(sourcePort).connect(connection);
         connectionInfos.add(new ConnectionInfo(sourceNodeId, sourcePort, targetNodeId, targetPort, connection));
         return this;
@@ -76,6 +82,9 @@ public class Flow {
     public void shutdown(){
         for(AbstractNode node : nodes.values()){
             node.shutdown();
+        }
+        for (ConnectionInfo info : connectionInfos) {
+            info.connection.close();
         }
     }
 
@@ -109,6 +118,8 @@ public class Flow {
         for (ConnectionInfo info : connectionInfos) {
             routes.add(new ConnectionRoute(
                     info.connection,
+                    nodes.get(info.sourceNodeId),
+                    info.sourcePort,
                     nodes.get(info.targetNodeId),
                     info.targetPort
             ));

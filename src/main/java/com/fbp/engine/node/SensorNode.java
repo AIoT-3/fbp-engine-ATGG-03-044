@@ -4,6 +4,7 @@ import com.fbp.engine.core.AbstractNode;
 import com.fbp.engine.message.Message;
 
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class SensorNode extends AbstractNode {
     private final double min;
@@ -23,7 +24,7 @@ public abstract class SensorNode extends AbstractNode {
 
     @Override
     protected void onProcess(Message message) {
-        double value = min + Math.random() * (max - min);
+        double value = ThreadLocalRandom.current().nextDouble(min, max);
         value = Math.round(value * 10) / 10.0;
 
         send("out", new Message(Map.of(

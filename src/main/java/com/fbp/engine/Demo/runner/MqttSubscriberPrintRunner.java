@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.MqttSubscriberNode;
 import com.fbp.engine.node.PrintNode;
@@ -24,7 +25,7 @@ public class MqttSubscriberPrintRunner {
                 )
         );
         PrintNode printNode = new PrintNode("printer-1");
-        Connection subscriberToPrint = new Connection();
+        Connection subscriberToPrint = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToPrint);
 

@@ -1,17 +1,12 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
-import com.fbp.engine.core.DefaultInputPort;
-import com.fbp.engine.core.Node;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.FilterNode;
-import com.fbp.engine.record.RecordingNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +17,7 @@ public class FilterNodeTest {
     @BeforeEach
     void setUp() {
         filterNode = new FilterNode("filter-1", "temperature", 20.0);
-        connection = new Connection();
+        connection = new LocalConnection();
         filterNode.getOutputPort("out").connect(connection);
     }
 

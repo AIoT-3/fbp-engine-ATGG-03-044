@@ -14,7 +14,7 @@ public class ConnectionTest {
 
     @BeforeEach
     void setUp() {
-        connection = new Connection();
+        connection = new LocalConnection();
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ConnectionTest {
     @Test
     @DisplayName("버퍼 크기 제한")
     void BufferLimitTest() throws InterruptedException {
-        Connection limitedConnection = new Connection(2);
+        Connection limitedConnection = new LocalConnection(2);
 
         Message first = new Message(Map.of("seq", 1));
         Message second = new Message(Map.of("seq", 2));

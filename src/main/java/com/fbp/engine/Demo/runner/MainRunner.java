@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.FilterNode;
 import com.fbp.engine.node.PrintNode;
@@ -15,8 +16,8 @@ public class MainRunner {
         FilterNode filterNode = new FilterNode("filter-1", "tick", 3.0);
         PrintNode printNode = new PrintNode("printer-1");
 
-        Connection connection1 = new Connection();
-        Connection connection2 = new Connection();
+        Connection connection1 = new LocalConnection();
+        Connection connection2 = new LocalConnection();
 
         timerNode.getOutputPort("out").connect(connection1);
         filterNode.getOutputPort().connect(connection2);

@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.LogNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class LogNodeTest {
     @BeforeEach
     void setUp() {
         logNode = new LogNode("log-1");
-        connection = new Connection();
+        connection = new LocalConnection();
         logNode.getOutputPort("out").connect(connection);
     }
     @Test
@@ -32,8 +32,8 @@ class LogNodeTest {
     @Test
     @DisplayName("중간 삽입 가능")
     void insertTest() throws InterruptedException{
-        Connection connection1 = new Connection();
-        Connection connection2 = new Connection();
+        Connection connection1 = new LocalConnection();
+        Connection connection2 = new LocalConnection();
         LogNode middle = new LogNode("log-middle");
         middle.getOutputPort("out").connect(connection2);
         Message message = new Message(Map.of("temperature", 25.5));

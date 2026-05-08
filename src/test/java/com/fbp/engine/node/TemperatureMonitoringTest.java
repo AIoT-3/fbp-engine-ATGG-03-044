@@ -1,11 +1,9 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.core.AbstractNode;
-import com.fbp.engine.node.TemperatureSensorNode;
-import com.fbp.engine.node.ThresholdFilterNode;
-import com.fbp.engine.node.TimerNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -49,10 +47,10 @@ public class TemperatureMonitoringTest {
         CollectorNode alertCollector = new CollectorNode("alert-collector");
         CollectorNode normalCollector = new CollectorNode("normal-collector");
 
-        Connection timerToSensor = new Connection();
-        Connection sensorToFilter = new Connection();
-        Connection filterToAlert = new Connection();
-        Connection filterToNormal = new Connection();
+        Connection timerToSensor = new LocalConnection();
+        Connection sensorToFilter = new LocalConnection();
+        Connection filterToAlert = new LocalConnection();
+        Connection filterToNormal = new LocalConnection();
 
         timerNode.getOutputPort("out").connect(timerToSensor);
         sensorNode.getOutputPort("out").connect(sensorToFilter);

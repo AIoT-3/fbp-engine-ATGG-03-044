@@ -1,9 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.CollectorNode;
-import com.fbp.engine.node.MqttSubscriberNode;
 import org.eclipse.paho.mqttv5.client.DisconnectedBufferOptions;
 import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
@@ -85,6 +84,23 @@ class MqttSubscriberNodeTest {
     }
 
     @Test
+    @DisplayName("iot 토픽 메타데이터 추출")
+    void IotTopicMetadataTest() {
+        Message message = mqttSubscriberNode.convert(
+                "iot/서버실/랙A/LHT65/a1b1c2d3e4f50011/temperature",
+                "{\"value\":23.5,\"device_name\":\"LHT65-001\"}"
+        );
+
+        assertEquals("iot/서버실/랙A/LHT65/a1b1c2d3e4f50011/temperature", message.get("topic"));
+        assertEquals("서버실", message.get("location"));
+        assertEquals("랙A", message.get("point"));
+        assertEquals("LHT65", message.get("sensor_type"));
+        assertEquals("a1b1c2d3e4f50011", message.get("dev_eui"));
+        assertEquals("temperature", message.get("measurement_key"));
+        assertEquals(23.5, message.get("value"));
+    }
+
+    @Test
     @Tag("integration")
     @DisplayName("Broker 연결 성공")
     void ConnectTest() {
@@ -121,7 +137,7 @@ class MqttSubscriberNodeTest {
                 )
         );
         CollectorNode collectorNode = new CollectorNode("collector-1");
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
 
         node.getOutputPort("out").connect(connection);
         node.initialize();
@@ -151,7 +167,7 @@ class MqttSubscriberNodeTest {
                         "qos", 1
                 )
         );
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
 
         node.getOutputPort("out").connect(connection);
         node.initialize();

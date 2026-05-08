@@ -14,9 +14,18 @@ public class LogNode extends AbstractNode {
         addOutputPort("out");
     }
 
+    /**
+     * 단계별 실습 코드에서 기본 입력 포트를 짧게 확인하기 위한 편의 메서드다.
+     * 일반 연결 코드에서는 getInputPort("in")을 직접 사용해도 된다.
+     */
     public InputPort getInputPort() {
         return getInputPort("in");
     }
+
+    /**
+     * 단계별 실습 코드에서 기본 출력 포트를 짧게 확인하기 위한 편의 메서드다.
+     * 일반 연결 코드에서는 getOutputPort("out")을 직접 사용해도 된다.
+     */
     public OutputPort getOutputPort() {
         return getOutputPort("out");
     }

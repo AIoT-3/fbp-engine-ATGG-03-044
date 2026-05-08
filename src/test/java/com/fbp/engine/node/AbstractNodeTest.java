@@ -1,6 +1,7 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.core.AbstractNode;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +80,7 @@ public class AbstractNodeTest {
     @DisplayName("send로 메시지 전달")
     void sendTest() throws InterruptedException{
         testNode.registerOutputPort("out");
-        Connection connection = new Connection();
+        Connection connection = new LocalConnection();
         Message message = new Message(Map.of("temperature",25.5));
         testNode.getOutputPort("out").connect(connection);
         testNode.sendMessage("out",message);

@@ -1,6 +1,7 @@
 package com.fbp.engine.integration;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.ModbusWriterNode;
 import com.fbp.engine.node.MqttPublisherNode;
@@ -59,9 +60,9 @@ class MqttModbusIntegrationTest {
                 )
         );
         RuleNode ruleNode = new RuleNode("rule-1", "temperature > 30");
-        Connection subscriberToRule = new Connection();
-        Connection matchConnection = new Connection();
-        Connection mismatchConnection = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection matchConnection = new LocalConnection();
+        Connection mismatchConnection = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(matchConnection);
@@ -112,9 +113,9 @@ class MqttModbusIntegrationTest {
                         "fixedValue", 1
                 )
         );
-        Connection subscriberToRule = new Connection();
-        Connection ruleToWriter = new Connection();
-        Connection writerResult = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection ruleToWriter = new LocalConnection();
+        Connection writerResult = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(ruleToWriter);
@@ -168,8 +169,8 @@ class MqttModbusIntegrationTest {
                         "retained", false
                 )
         );
-        Connection subscriberToRule = new Connection();
-        Connection ruleToPublisher = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection ruleToPublisher = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(ruleToPublisher);
@@ -250,10 +251,10 @@ class MqttModbusIntegrationTest {
                         "fixedValue", 1
                 )
         );
-        Connection subscriberToRule = new Connection();
-        Connection ruleToPublisher = new Connection();
-        Connection ruleToWriter = new Connection();
-        Connection writerResult = new Connection();
+        Connection subscriberToRule = new LocalConnection();
+        Connection ruleToPublisher = new LocalConnection();
+        Connection ruleToWriter = new LocalConnection();
+        Connection writerResult = new LocalConnection();
 
         subscriberNode.getOutputPort("out").connect(subscriberToRule);
         ruleNode.getOutputPort("match").connect(ruleToPublisher);

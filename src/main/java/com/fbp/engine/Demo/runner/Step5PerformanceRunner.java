@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.RuleNode;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +19,8 @@ public class Step5PerformanceRunner {
 
     private static void runScenario(int messageCount) throws Exception {
         RuleNode ruleNode = new RuleNode("rule-1", "value > 30");
-        Connection matchConnection = new Connection(messageCount + 10);
-        Connection mismatchConnection = new Connection(messageCount + 10);
+        Connection matchConnection = new LocalConnection(messageCount + 10);
+        Connection mismatchConnection = new LocalConnection(messageCount + 10);
 
         ruleNode.getOutputPort("match").connect(matchConnection);
         ruleNode.getOutputPort("mismatch").connect(mismatchConnection);

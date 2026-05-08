@@ -2,6 +2,7 @@
 package com.fbp.engine.demo.runner;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
 import com.fbp.engine.node.ModbusReaderNode;
 import com.fbp.engine.node.ModbusWriterNode;
@@ -51,11 +52,11 @@ public class ModbusAlertRunner {
         PrintNode resultPrintNode = new PrintNode("result-printer-1");
         PrintNode errorPrintNode = new PrintNode("error-printer-1");
 
-        Connection timerToReader = new Connection();
-        Connection readerToFilter = new Connection();
-        Connection filterToWriter = new Connection();
-        Connection readerToError = new Connection();
-        Connection writerToResult = new Connection();
+        Connection timerToReader = new LocalConnection();
+        Connection readerToFilter = new LocalConnection();
+        Connection filterToWriter = new LocalConnection();
+        Connection readerToError = new LocalConnection();
+        Connection writerToResult = new LocalConnection();
 
         timerNode.getOutputPort("out").connect(timerToReader);
         readerNode.getOutputPort("out").connect(readerToFilter);

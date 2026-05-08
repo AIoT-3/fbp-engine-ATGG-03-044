@@ -1,8 +1,8 @@
-package com.fbp.engine.Node;
+package com.fbp.engine.node;
 
 import com.fbp.engine.core.Connection;
+import com.fbp.engine.core.LocalConnection;
 import com.fbp.engine.message.Message;
-import com.fbp.engine.node.HumiditySensorNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class HumiditySensorNodeTest {
     @BeforeEach
     void setUp() {
         humiditySensorNode = new HumiditySensorNode("humidity-sensor-1", 30.0, 90.0);
-        connection = new Connection();
+        connection = new LocalConnection();
         humiditySensorNode.getOutputPort("out").connect(connection);
     }
     @Test
