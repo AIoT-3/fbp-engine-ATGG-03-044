@@ -1,0 +1,68 @@
+{
+  "id": "stage3-plus-local-flow",
+  "name": "Stage 3+ Local CLI Demo Flow",
+  "description": "CLI와 InfluxDB/Grafana에서 분기와 느린 경로 메트릭을 확인하기 위한 로컬 플로우",
+  "transport": {
+    "type": "local"
+  },
+  "nodes": [
+    {
+      "id": "timer",
+      "type": "Timer",
+      "config": {
+        "intervalMs": 500
+      }
+    },
+    {
+      "id": "counter",
+      "type": "Counter",
+      "config": {}
+    },
+    {
+      "id": "rule",
+      "type": "Rule",
+      "config": {
+        "expression": "count > 10"
+      }
+    },
+    {
+      "id": "slow-alert-path",
+      "type": "Delay",
+      "config": {
+        "delayMs": 1000
+      }
+    },
+    {
+      "id": "normal-printer",
+      "type": "Print",
+      "config": {}
+    },
+    {
+      "id": "alert-printer",
+      "type": "Print",
+      "config": {}
+    }
+  ],
+  "connections": [
+    {
+      "from": "timer:out",
+      "to": "counter:in"
+    },
+    {
+      "from": "counter:out",
+      "to": "rule:in"
+    },
+    {
+      "from": "rule:mismatch",
+      "to": "normal-printer:in"
+    },
+    {
+      "from": "rule:match",
+      "to": "slow-alert-path:in"
+    },
+    {
+      "from": "slow-alert-path:out",
+      "to": "alert-printer:in"
+    }
+  ]
+}

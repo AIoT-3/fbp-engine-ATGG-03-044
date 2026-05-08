@@ -1,0 +1,189 @@
+{
+  "id": "stage3-plus-iot-sensor-flow",
+  "name": "Stage 3+ IoT Sensor Flow",
+  "description": "ChirpStack MQTT uplink를 직접 받아 threshold 처리하고 InfluxDB domain metric으로 적재하는 플로우",
+  "transport": {
+    "type": "local"
+  },
+  "metrics": {
+    "domain": [
+      {
+        "name": "temperature",
+        "source": {
+          "node": "sensor",
+          "port": "out"
+        },
+        "field": "object.temperature",
+        "tags": {
+          "location": "field:deviceInfo.tags.location",
+          "point": "field:deviceInfo.tags.point",
+          "sensor_type": "field:deviceInfo.deviceProfileName",
+          "dev_eui": "field:deviceInfo.devEui",
+          "source": "chirpstack"
+        },
+        "windows": ["1m", "1h", "1d"]
+      },
+      {
+        "name": "humidity",
+        "source": {
+          "node": "sensor",
+          "port": "out"
+        },
+        "field": "object.humidity",
+        "tags": {
+          "location": "field:deviceInfo.tags.location",
+          "point": "field:deviceInfo.tags.point",
+          "sensor_type": "field:deviceInfo.deviceProfileName",
+          "dev_eui": "field:deviceInfo.devEui",
+          "source": "chirpstack"
+        },
+        "windows": ["1m", "1h", "1d"]
+      },
+      {
+        "name": "co2",
+        "source": {
+          "node": "sensor",
+          "port": "out"
+        },
+        "field": "object.co2",
+        "tags": {
+          "location": "field:deviceInfo.tags.location",
+          "point": "field:deviceInfo.tags.point",
+          "sensor_type": "field:deviceInfo.deviceProfileName",
+          "dev_eui": "field:deviceInfo.devEui",
+          "source": "chirpstack"
+        },
+        "windows": ["1m", "1h", "1d"]
+      },
+      {
+        "name": "door",
+        "source": {
+          "node": "sensor",
+          "port": "out"
+        },
+        "field": "object.magnet_status",
+        "tags": {
+          "location": "field:deviceInfo.tags.location",
+          "point": "field:deviceInfo.tags.point",
+          "sensor_type": "field:deviceInfo.deviceProfileName",
+          "dev_eui": "field:deviceInfo.devEui",
+          "source": "chirpstack"
+        },
+        "windows": ["1m", "1h", "1d"]
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "sensor",
+      "type": "MqttSubscriber",
+      "config": {
+        "brokerUrl": "tcp://10.116.64.13:1883",
+        "clientId": "fbp-stage3plus-chirpstack-sub",
+        "topic": "application/+/device/+/event/up",
+        "qos": 1
+      }
+    },
+    {
+      "id": "temperature-rule",
+      "type": "ThresholdFilter",
+      "config": {
+        "field": "object.temperature",
+        "threshold": 30.0
+      }
+    },
+    {
+      "id": "humidity-rule",
+      "type": "ThresholdFilter",
+      "config": {
+        "field": "object.humidity",
+        "threshold": 80.0
+      }
+    },
+    {
+      "id": "co2-rule",
+      "type": "ThresholdFilter",
+      "config": {
+        "field": "object.co2",
+        "threshold": 1000.0
+      }
+    },
+    {
+      "id": "temperature-alert",
+      "type": "Alert",
+      "config": {}
+    },
+    {
+      "id": "humidity-alert",
+      "type": "Alert",
+      "config": {}
+    },
+    {
+      "id": "co2-alert",
+      "type": "Print",
+      "config": {}
+    },
+    {
+      "id": "temperature-normal",
+      "type": "Print",
+      "config": {}
+    },
+    {
+      "id": "humidity-normal",
+      "type": "Print",
+      "config": {}
+    },
+    {
+      "id": "co2-normal",
+      "type": "Print",
+      "config": {}
+    },
+    {
+      "id": "raw-printer",
+      "type": "Print",
+      "config": {}
+    }
+  ],
+  "connections": [
+    {
+      "from": "sensor:out",
+      "to": "temperature-rule:in"
+    },
+    {
+      "from": "sensor:out",
+      "to": "humidity-rule:in"
+    },
+    {
+      "from": "sensor:out",
+      "to": "co2-rule:in"
+    },
+    {
+      "from": "sensor:out",
+      "to": "raw-printer:in"
+    },
+    {
+      "from": "temperature-rule:alert",
+      "to": "temperature-alert:in"
+    },
+    {
+      "from": "temperature-rule:normal",
+      "to": "temperature-normal:in"
+    },
+    {
+      "from": "humidity-rule:alert",
+      "to": "humidity-alert:in"
+    },
+    {
+      "from": "humidity-rule:normal",
+      "to": "humidity-normal:in"
+    },
+    {
+      "from": "co2-rule:alert",
+      "to": "co2-alert:in"
+    },
+    {
+      "from": "co2-rule:normal",
+      "to": "co2-normal:in"
+    }
+  ]
+}
